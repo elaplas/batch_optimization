@@ -36,20 +36,22 @@ def opt_func_batch(Xs, Ys, learning_rate, batch_size = 5, steps=100):
     w = 0.0
     b = 0.0
     for s in range(steps):
-        for b in range(1, int(len(Xs)/batch_size)+1):
-            w_acc = 0
-            b_acc = 0
-            batch_begin = (b-1)*batch_size
-            batch_end = b*batch_size
+        w_acc = 0.0
+        b_acc = 0.0
+        for j in range(1, int(len(Xs)/batch_size)+1):
+            batch_begin = (j-1)*batch_size
+            batch_end = j*batch_size
+            w_b = w
+            b_b = b
             for i in range (batch_begin, batch_end):
-                grad_w = gradient_w_func(Xs[i], Ys[i], w, b)
-                grad_b = gradient_b_func(Xs[i], Ys[i], w, b)
-                new_w = w - (learning_rate*grad_w) 
-                new_b = b - (learning_rate*grad_b)
-                w_acc += new_w
-                b_acc += new_b
-            w = w_acc / batch_size
-            b = b_acc/ batch_size
+                grad_w = gradient_w_func(Xs[i], Ys[i], w_b, b_b)
+                grad_b = gradient_b_func(Xs[i], Ys[i], w_b, b_b)
+                w_b = w_b - (learning_rate*grad_w) 
+                b_b = b_b - (learning_rate*grad_b)
+                w_acc += w_b
+                b_acc += b_b
+        w = w_acc/(int(len(Xs)/batch_size) * batch_size)
+        b = b_acc/(int(len(Xs)/batch_size) * batch_size)
         print(f"loss {s}: {loss_func(Xs[i], Ys[i], w, b)}")
     return w, b
 
